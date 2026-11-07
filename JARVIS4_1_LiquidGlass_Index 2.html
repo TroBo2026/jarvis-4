@@ -237,6 +237,14 @@ aside{background:rgba(17,19,24,.72)!important}
 .index-section-label{font-size:10px;color:#d5b875;letter-spacing:.17em;text-transform:uppercase;margin:22px 0 10px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
 
+
+/* Voice controls: explicit microphone activation and optional spoken replies */
+.voice-btn{flex:0 0 38px;width:38px;height:38px;border:1px solid #3b3c42;border-radius:10px;background:#222329;color:#d8c28e;font-size:16px;cursor:pointer}
+.voice-btn:hover,.voice-btn.listening{border-color:var(--site-primary);background:#3a3120}
+.voice-btn:focus-visible{outline:2px solid var(--site-primary);outline-offset:2px}
+.voice-btn:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:380px){.voice-btn{flex-basis:34px;width:34px;height:38px}}
+
 </style>
 </head>
 <body>
@@ -262,11 +270,11 @@ aside{background:rgba(17,19,24,.72)!important}
       <div class="panel system-card"><div><div class="system-top"><strong>KI-Verbindung</strong><span class="chip">Noch nicht verbunden</span></div><div class="system-metric">Bereit für Aufbau</div><div class="system-caption">Die Oberfläche läuft lokal als Demo.</div><div class="meter"><span></span></div></div><div><div class="system-top"><strong>Nächster Schritt</strong><span class="metric-icon">⌁</span></div><div class="system-caption" style="line-height:1.7;margin-top:8px">Qwen über eine sichere Schnittstelle verbinden und echte Antworten in diesen Chat holen.</div></div></div>
     </div>
     <div class="metrics"><div class="panel metric-card"><div class="metric-head">Wissenseinträge <span class="metric-icon">▤</span></div><div class="metric-number" id="knowledgeCount">0</div><div class="metric-note">In diesem Browser gespeichert</div></div><div class="panel metric-card"><div class="metric-head">Gespeicherte Notizen <span class="metric-icon">✎</span></div><div class="metric-number" id="noteCount">0</div><div class="metric-note">Dein persönliches Gedächtnis</div></div><div class="panel metric-card"><div class="metric-head">KI-Status <span class="metric-icon">◉</span></div><div class="metric-number" style="font-size:20px">Demo</div><div class="metric-note">Noch keine echte Modellanbindung</div></div></div>
-    <div class="lower"><div class="panel chat-panel"><div class="section-head"><div class="section-title">Direkt mit JARVIS sprechen</div><button class="section-link" data-go="chat">Vollständigen Chat öffnen ↗</button></div><div class="chat-log" id="chatLog"><div class="message assistant">Guten Tag, Sir. Ich bin JARVIS. Die Oberfläche ist bereit; eine echte KI-Verbindung muss noch eingerichtet werden.</div></div><form class="chat-compose" id="chatForm"><input id="chatInput" autocomplete="off" placeholder="Schreibe eine Nachricht …" aria-label="Nachricht an JARVIS"><button class="send" type="submit" aria-label="Senden">↑</button></form><div class="note">Hinweis: Dieser Demo-Chat antwortet noch nicht mit einem Sprachmodell. Nachrichten können in dieser Sitzung angezeigt werden.</div></div>
+    <div class="lower"><div class="panel chat-panel"><div class="section-head"><div class="section-title">Direkt mit JARVIS sprechen</div><button class="section-link" data-go="chat">Vollständigen Chat öffnen ↗</button></div><div class="chat-log" id="chatLog"><div class="message assistant">Guten Tag, Sir. Ich bin JARVIS. Die Oberfläche ist bereit; eine echte KI-Verbindung muss noch eingerichtet werden.</div></div><form class="chat-compose" id="chatForm"><input id="chatInput" autocomplete="off" placeholder="Schreibe eine Nachricht …" aria-label="Nachricht an JARVIS"><button class="voice-btn" id="voiceInputQuick" type="button" aria-label="Nachricht diktieren" title="Nachricht diktieren">🎙</button><button class="voice-btn" id="speakLastQuick" type="button" aria-label="Letzte Antwort vorlesen" title="Letzte Antwort vorlesen">🔊</button><button class="send" type="submit" aria-label="Senden">↑</button></form><div class="note">Hinweis: Dieser Demo-Chat antwortet noch nicht mit einem Sprachmodell. Nachrichten können in dieser Sitzung angezeigt werden.</div></div>
     <div class="panel"><div class="section-head"><div class="section-title">Wissen & Gedächtnis</div><button class="section-link" data-go="knowledge">Öffnen ↗</button></div><div class="knowledge-list"><div class="knowledge-item"><div class="knowledge-symbol">✧</div><div><div class="knowledge-title">JARVIS-Persönlichkeit</div><div class="knowledge-desc">Präzise, sachlich, deutschsprachig und lösungsorientiert.</div></div></div><div class="knowledge-item"><div class="knowledge-symbol">⌘</div><div><div class="knowledge-title">Projektwissen</div><div class="knowledge-desc">Lege eigene Informationen und Projektideen an.</div></div></div><div class="knowledge-item"><div class="knowledge-symbol">◷</div><div><div class="knowledge-title">Browser-Speicherung</div><div class="knowledge-desc">Einträge werden, soweit verfügbar, auf diesem Gerät gespeichert.</div></div></div></div></div></div>
   </section>
 
-  <section class="view active" id="view-chat"><div class="panel chat-panel" style="min-height:60vh"><div class="section-head"><div><div class="eyebrow">KOMMUNIKATION</div><div class="section-title" style="margin-top:7px">JARVIS Chat</div></div><div class="chat-head-actions"><label class="mode-label" for="aiMode">KI-Modus</label><select id="aiMode" class="mode-select" aria-label="KI-Modus"><option value="local">Lokal · iPad</option><option value="internet">Internet · online</option></select><button class="btn" id="clearChat">Chat leeren</button></div></div><div class="mode-status local" id="modeStatus"><strong id="modelStatusTitle">Lokale KI noch nicht geladen</strong><span id="modelStatusText">Beim ersten Start muss ein kleines Sprachmodell heruntergeladen werden. Danach kann es lokal im Browser laufen. Die Modell-Dateien sind mehrere hundert MB groß.</span><div class="model-actions"><button class="btn primary" id="loadLocalModel" type="button">Lokale KI laden</button><span id="loadProgress" aria-live="polite">Noch nicht gestartet</span></div></div><div class="chat-log" id="fullChatLog"><div class="message assistant">Guten Tag, Sir. Wie geht es Ihnen heute? Wie kann ich Ihnen helfen? Wählen Sie den lokalen Modus oder richten Sie die sichere Qwen-Verbindung ein.</div></div><form class="chat-compose" id="fullChatForm"><input id="fullChatInput" autocomplete="off" placeholder="Nachricht eingeben …" aria-label="Nachricht an JARVIS"><button class="send" type="submit" aria-label="Senden">↑</button></form><div class="note" id="chatHelp">Der Online-Modus benötigt einmalig eine sichere Server-Verbindung. Der geheime API-Schlüssel wird dabei niemals in dieser HTML-Datei gespeichert.</div>
+  <section class="view active" id="view-chat"><div class="panel chat-panel" style="min-height:60vh"><div class="section-head"><div><div class="eyebrow">KOMMUNIKATION</div><div class="section-title" style="margin-top:7px">JARVIS Chat</div></div><div class="chat-head-actions"><label class="mode-label" for="aiMode">KI-Modus</label><select id="aiMode" class="mode-select" aria-label="KI-Modus"><option value="local">Lokal · iPad</option><option value="internet">Internet · online</option></select><button class="btn" id="clearChat">Chat leeren</button></div></div><div class="mode-status local" id="modeStatus"><strong id="modelStatusTitle">Lokale KI noch nicht geladen</strong><span id="modelStatusText">Beim ersten Start muss ein kleines Sprachmodell heruntergeladen werden. Danach kann es lokal im Browser laufen. Die Modell-Dateien sind mehrere hundert MB groß.</span><div class="model-actions"><button class="btn primary" id="loadLocalModel" type="button">Lokale KI laden</button><span id="loadProgress" aria-live="polite">Noch nicht gestartet</span></div></div><div class="chat-log" id="fullChatLog"><div class="message assistant">Guten Tag, Sir. Wie geht es Ihnen heute? Wie kann ich Ihnen helfen? Wählen Sie den lokalen Modus oder richten Sie die sichere Qwen-Verbindung ein.</div></div><form class="chat-compose" id="fullChatForm"><input id="fullChatInput" autocomplete="off" placeholder="Nachricht eingeben …" aria-label="Nachricht an JARVIS"><button class="voice-btn" id="voiceInputFull" type="button" aria-label="Nachricht diktieren" title="Nachricht diktieren">🎙</button><button class="voice-btn" id="speakLastFull" type="button" aria-label="Letzte Antwort vorlesen" title="Letzte Antwort vorlesen">🔊</button><button class="send" type="submit" aria-label="Senden">↑</button></form><div class="note" id="chatHelp">Der Online-Modus benötigt einmalig eine sichere Server-Verbindung. Der geheime API-Schlüssel wird dabei niemals in dieser HTML-Datei gespeichert.</div>
 <div id="onlineSetup" class="panel" style="margin:12px auto 0;max-width:850px;width:calc(100% - 36px);display:none">
 <label class="field-label" for="proxyUrl">Sichere JARVIS-Verbindungsadresse</label>
 <input class="field" id="proxyUrl" type="url" placeholder="https://dein-worker.example.workers.dev" autocomplete="url">
@@ -304,6 +312,70 @@ let localEngine=null, modelLoading=false;
 async function loadLocalModel(){if(modelLoading||localEngine)return;modelLoading=true;const btn=$('loadLocalModel'),title=$('modelStatusTitle'),desc=$('modelStatusText'),progress=$('loadProgress');btn.disabled=true;btn.textContent='Wird vorbereitet …';title.textContent='Lokale KI wird geladen';desc.textContent='Die Bibliothek wird geladen und danach das Modell heruntergeladen. Bitte diese Seite geöffnet lassen.';progress.textContent='Initialisierung …';try{if(!('gpu' in navigator)){throw new Error('Dieser Browser stellt WebGPU nicht bereit. Öffne JARVIS in einem aktuellen Safari auf iPadOS und nutze eine HTTPS-Adresse.')}let webllm;let importErrors=[];for(const url of ['https://esm.sh/@mlc-ai/web-llm?bundle','https://esm.run/@mlc-ai/web-llm']){try{webllm=await import(url);break}catch(importErr){importErrors.push(url+': '+(importErr?.message||String(importErr)))}}if(!webllm)throw new Error('Die KI-Bibliothek konnte von keinem CDN geladen werden. '+importErrors.join(' | '));localEngine=await webllm.CreateMLCEngine('Qwen2.5-0.5B-Instruct-q4f16_1-MLC',{initProgressCallback:(report)=>{progress.textContent=report.text||'Modell wird geladen …'}});title.textContent='Lokale KI ist bereit';desc.textContent='Qwen 0.5B läuft im Browser. Deine Chat-Nachrichten werden für die Antwort lokal verarbeitet.';progress.textContent='Bereit';btn.textContent='Modell geladen';modeNotice()}catch(err){localEngine=null;title.textContent='Lokales Modell konnte nicht starten';desc.textContent='Das Modell wurde NICHT geladen. Prüfe WebGPU, freien Speicher und die Internetverbindung. Technischer Fehler: '+(err?.message||String(err));progress.textContent='Nicht geladen';btn.disabled=false;btn.textContent='Erneut versuchen'}finally{modelLoading=false}}
 async function replyLocal(logId,text){if(!localEngine){addMessage(logId,'Die lokale KI ist noch nicht geladen. Tippe zuerst auf „Lokale KI laden“.','assistant');return}const log=$(logId);const prior=[...log.querySelectorAll('.message')].slice(-10).map(el=>({role:el.classList.contains('user')?'user':'assistant',content:el.textContent}));const settings=(()=>{try{return JSON.parse(localStorage.getItem('jarvis40_settings_v1')||'{}')}catch(e){return {}}})();const system='Du bist JARVIS, der persönliche KI-Assistent des Nutzers. Sprich den Nutzer grundsätzlich mit Sir an, aber nicht zwanghaft in jedem Satz. Begrüßung zum Beispiel: Guten Tag, Sir. Wie kann ich Ihnen helfen? Passe deinen Stil an die Situation an: Im lockeren Alltag charmant, geistreich und gelegentlich humorvoll; bei Technik und Projekten analytisch und strukturiert; bei Risiken, ernsten Problemen oder Fehlern ruhig, präzise und professionell ohne unpassende Scherze. Bei Unklarheit höflich und neutral bleiben. Antworte standardmäßig auf Deutsch, erfinde keine Fakten und erkläre Grenzen transparent.'+(settings.precise===false?'':' Vermeide unnötige Ausschmückungen.');const placeholder=document.createElement('div');placeholder.className='message assistant';placeholder.textContent='JARVIS verarbeitet lokal …';log.append(placeholder);log.scrollTop=log.scrollHeight;try{const messages=[{role:'system',content:system+knowledgeContext(text)},...prior];const result=await localEngine.chat.completions.create({messages,temperature:0.6,max_tokens:700});placeholder.textContent=result.choices?.[0]?.message?.content||'Keine Antwort erzeugt.'}catch(err){placeholder.textContent='Fehler bei der lokalen Antwort: '+(err?.message||String(err))}log.scrollTop=log.scrollHeight}
 async function replyOnline(logId,userText){const endpoint=(()=>{try{return localStorage.getItem('jarvis40_qwen_proxy')||''}catch(e){return ''}})();if(!endpoint){addMessage(logId,'Die Qwen-Verbindung ist noch nicht eingerichtet. Trage zuerst die sichere Server-Adresse ein.','assistant');return}const log=$(logId);const prior=[...log.querySelectorAll('.message')].slice(-12).map(el=>({role:el.classList.contains('user')?'user':'assistant',content:el.textContent}));const placeholder=document.createElement('div');placeholder.className='message assistant';placeholder.textContent='JARVIS verbindet sich mit Qwen …';log.append(placeholder);log.scrollTop=log.scrollHeight;try{const response=await fetch(endpoint.replace(/\/$/, '')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'Du bist JARVIS, der persönliche KI-Assistent des Nutzers. Sprich den Nutzer grundsätzlich mit Sir an, aber nicht zwanghaft in jedem Satz. Begrüßung zum Beispiel: Guten Tag, Sir. Wie kann ich Ihnen helfen? Passe deinen Stil an die Situation an: Im lockeren Alltag charmant, geistreich und gelegentlich humorvoll; bei Technik und Projekten analytisch und strukturiert; bei Risiken, ernsten Problemen oder Fehlern ruhig, präzise und professionell ohne unpassende Scherze. Bei Unklarheit höflich und neutral bleiben. Antworte standardmäßig auf Deutsch, erfinde keine Fakten und erkläre Grenzen transparent.'},...prior]})});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||('Serverfehler '+response.status));placeholder.textContent=data.reply||'Qwen hat keine Textantwort zurückgegeben.'}catch(err){placeholder.textContent='Verbindung fehlgeschlagen: '+(err?.message||String(err))+' Prüfe die Server-Adresse und die Einrichtung.'}log.scrollTop=log.scrollHeight}
+
+/* Browser voice interface. Recording starts only after the user presses the microphone button. */
+function startVoiceInput(inputId,buttonId){
+  const input=$(inputId),button=$(buttonId);
+  if(!input||!button)return;
+  const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechAPI){addMessage(inputId==='fullChatInput'?'fullChatLog':'chatLog','Spracherkennung wird von diesem Browser leider nicht unterstützt. Du kannst Nachrichten weiterhin eintippen.','assistant');return}
+  try{
+    const recognition=new SpeechAPI();
+    recognition.lang='de-DE';
+    recognition.interimResults=false;
+    recognition.continuous=false;
+    button.classList.add('listening');
+    button.textContent='●';
+    button.setAttribute('aria-label','Spracherkennung läuft');
+    recognition.onresult=event=>{
+      const transcript=event.results?.[0]?.[0]?.transcript||'';
+      if(transcript){input.value=(input.value?input.value+' ':'')+transcript;input.focus()}
+    };
+    recognition.onerror=event=>{
+      const logId=inputId==='fullChatInput'?'fullChatLog':'chatLog';
+      const message=event.error==='not-allowed'?'Mikrofonzugriff wurde nicht erlaubt. Prüfe die Browser-Berechtigung.':'Spracherkennung konnte nicht gestartet werden ('+event.error+').';
+      addMessage(logId,message,'assistant');
+    };
+    recognition.onend=()=>{
+      button.classList.remove('listening');
+      button.textContent='🎙';
+      button.setAttribute('aria-label','Nachricht diktieren');
+    };
+    recognition.start();
+  }catch(error){
+    button.classList.remove('listening');
+    button.textContent='🎙';
+    addMessage(inputId==='fullChatInput'?'fullChatLog':'chatLog','Mikrofon konnte nicht gestartet werden: '+(error.message||String(error)),'assistant');
+  }
+}
+function speakLastReply(logId,buttonId){
+  const button=$(buttonId),log=$(logId);
+  if(!button||!log)return;
+  if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){
+    addMessage(logId,'Sprachausgabe wird von diesem Browser nicht unterstützt.','assistant');return;
+  }
+  const replies=[...log.querySelectorAll('.message.assistant')];
+  const last=replies[replies.length-1];
+  const text=last?.textContent?.trim();
+  if(!text){addMessage(logId,'Es gibt noch keine JARVIS-Antwort zum Vorlesen.','assistant');return}
+  window.speechSynthesis.cancel();
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang='de-DE';
+  utterance.rate=0.96;
+  const voices=window.speechSynthesis.getVoices();
+  const germanVoice=voices.find(voice=>voice.lang?.toLowerCase().startsWith('de'));
+  if(germanVoice)utterance.voice=germanVoice;
+  button.classList.add('listening');
+  utterance.onend=()=>button.classList.remove('listening');
+  utterance.onerror=()=>button.classList.remove('listening');
+  window.speechSynthesis.speak(utterance);
+}
+[['voiceInputQuick','chatInput'],['voiceInputFull','fullChatInput']].forEach(([buttonId,inputId])=>{
+  $(buttonId)?.addEventListener('click',()=>startVoiceInput(inputId,buttonId));
+});
+$('speakLastQuick')?.addEventListener('click',()=>speakLastReply('chatLog','speakLastQuick'));
+$('speakLastFull')?.addEventListener('click',()=>speakLastReply('fullChatLog','speakLastFull'));
+
 function wireChat(formId,inputId,logId){$(formId).addEventListener('submit',async e=>{e.preventDefault();const input=$(inputId);const text=input.value.trim();if(!text)return;addMessage(logId,text,'user');input.value='';if(currentMode()==='local'){await replyLocal(logId,text)}else{await replyOnline(logId,text)}})}
 wireChat('chatForm','chatInput','chatLog');wireChat('fullChatForm','fullChatInput','fullChatLog');
 if($('saveProxy'))$('saveProxy').addEventListener('click',()=>{const value=$('proxyUrl').value.trim().replace(/\/$/, '');if(!/^https:\/\//i.test(value)){$('proxyFeedback').textContent='Bitte eine gültige HTTPS-Server-Adresse eingeben.';return}try{localStorage.setItem('jarvis40_qwen_proxy',value);$('proxyFeedback').textContent='Server-Adresse gespeichert. Du kannst jetzt im JARVIS-Chat eine Testnachricht senden.'}catch(e){$('proxyFeedback').textContent='Speichern ist in diesem Browser nicht verfügbar.'}});
