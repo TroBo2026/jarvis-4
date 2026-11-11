@@ -1,6 +1,5 @@
 import { memory } from "./core/memory.js";
 import { askModel, getWorkerUrl, saveWorkerUrl } from "./core/llm-client.js";
-import { buildAssistantPrompt } from "./core/prompt.js";
 import { createVoice } from "./modules/voice.js";
 
 const $ = id => document.getElementById(id);
@@ -12,8 +11,15 @@ let history = loadHistory();
 
 function loadHistory() {
   try {
-    const value = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-    return Array.isArray(value) ? value : [];
+    const current = JSON.parse(localStorage.getItem(HISTORY_KEY) || "null");
+    if (Array.isArray(current)) return current;
+    const legacy = JSON.parse(localStorage.getItem("jarvis41_chat_history_v1") || "[]");
+    const migrated = Array.isArray(legacy) ? legacy.map(item => ({
+      role: item.role === "user" ? "user" : "assistant",
+      content: String(item.content || item.text || "")
+    })).filter(item => item.content) : [];
+    if (migrated.length) localStorage.setItem(HISTORY_KEY, JSON.stringify(migrated));
+    return migrated;
   } catch { return []; }
 }
 function saveHistory() {
@@ -26,6 +32,8 @@ function setStatus(label, detail, state = "idle") {
   $("connectionState").textContent = label;
   $("connectionDetail").textContent = detail;
   $("connectionDot").className = "status-dot " + state;
+  if ($("dashboardStatus")) $("dashboardStatus").textContent = label;
+  if ($("dashboardDot")) $("dashboardDot").className = "status-dot " + state;
 }
 function go(view) {
   document.querySelectorAll("[data-view]").forEach(button => button.classList.toggle("active", button.dataset.view === view));
@@ -113,10 +121,10 @@ async function sendMessage(text) {
   const responseBubble = addBubble("assistant", "JARVIS verarbeitet Ihre Anfrage …");
   try {
     const relevant = memory.search(prompt, 5);
-    const modelMessages = [
-      { role: "system", content: buildAssistantPrompt(settings(), relevant) },
-      ...history.slice(-12)
-    ];
+    const modelMessages = history.slice(-8).map(item => ({
+      role: item.role,
+      content: String(item.content).slice(0, 2000)
+    }));
     const reply = await askModel({ messages: modelMessages, memories: relevant });
     responseBubble.textContent = reply;
     history.push({ role: "assistant", content: reply });
@@ -155,10 +163,7 @@ $("memoryForm").addEventListener("submit", event => {
 $("saveSettings").addEventListener("click", () => {
   try {
     const url = saveWorkerUrl($("workerUrl").value);
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
-      language: $("language").value,
-      instructions: $("instructions").value.trim()
-    }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ savedAt: new Date().toISOString() }));
     $("workerUrl").value = url;
     $("settingsFeedback").textContent = "Einstellungen lokal gespeichert.";
     setStatus("Bereit", "Worker-Adresse gespeichert. Eine echte Modellanfrage wird beim Senden geprüft.");
@@ -167,8 +172,7 @@ $("saveSettings").addEventListener("click", () => {
 });
 $("testConnection").addEventListener("click", () => {
   go("chat");
-  $("messageInput").value = "Antworte bitte nur mit: JARVIS-Verbindung erfolgreich.";
-  $("messageInput").focus();
+  sendMessage("Antworte bitte nur mit: JARVIS-Verbindung erfolgreich.");
 });
 $("micButton").addEventListener("click", () => {
   voice.listen(text => { $("messageInput").value = ($("messageInput").value + " " + text).trim(); $("messageInput").focus(); },
@@ -186,8 +190,6 @@ $("clearHistory").addEventListener("click", () => {
 });
 $("workerUrl").value = getWorkerUrl();
 const saved = settings();
-$("language").value = saved.language || "German";
-$("instructions").value = saved.instructions || "";
 renderHistory();
 renderMemory();
 renderDashboard();
