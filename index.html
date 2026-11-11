@@ -49,11 +49,10 @@
     </section>
 
     <section class="page" id="page-settings" hidden>
-      <div class="surface"><div class="eyebrow">KONFIGURATION</div><h2 class="section-heading" style="margin-top:10px">Einstellungen</h2><p class="intro">Der Worker vermittelt zwischen JARVIS und dem Modell. Ein API-Schlüssel gehört ausschließlich in die Cloudflare-Umgebung, niemals in diese Website.</p>
+      <div class="surface"><div class="eyebrow">KONFIGURATION</div><h2 class="section-heading" style="margin-top:10px">Einstellungen</h2><p class="intro">Der Worker vermittelt zwischen JARVIS und dem Sprachmodell. Der Modellname wird serverseitig festgelegt; ein API-Schlüssel gehört ausschließlich in die Cloudflare-Umgebung, niemals in diese Website.</p>
         <div class="settings-grid">
           <label><span class="field-label">Cloudflare Worker-Adresse</span><input class="field" id="workerUrl" type="url" autocomplete="url" placeholder="https://dein-worker.workers.dev"></label>
-          <label><span class="field-label">Antwortsprache</span><select class="field" id="language"><option value="German">Deutsch</option><option value="English">English</option></select></label>
-          <label><span class="field-label">Zusätzliche Persönlichkeitsanweisungen</span><textarea class="field" id="instructions" rows="4" placeholder="z. B. Bei Technikfragen erst die Ursache erklären, dann konkrete Schritte nennen."></textarea></label>
+          <div class="intro">Persönlichkeit und Sicherheitsregeln werden derzeit zentral im Worker festgelegt. Die Oberfläche verändert diese Systemregeln nicht.</div>
           <div><button class="primary-button" id="saveSettings" type="button">Einstellungen speichern</button> <button class="quiet-button" id="testConnection" type="button">Verbindung testen</button></div>
           <div class="feedback" id="settingsFeedback" aria-live="polite"></div>
         </div>
