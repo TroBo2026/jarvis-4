@@ -2,8 +2,22 @@ const KEY = "jarvis5_memory_v1";
 
 function readAll() {
   try {
-    const value = JSON.parse(localStorage.getItem(KEY) || "[]");
-    return Array.isArray(value) ? value : [];
+    const current = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (Array.isArray(current)) return current;
+    const legacy = JSON.parse(localStorage.getItem("jarvis40_knowledge_v2") || localStorage.getItem("jarvis40_knowledge_v1") || "[]");
+    const projects = JSON.parse(localStorage.getItem("jarvis40_projects_v1") || "[]");
+    const migrated = [
+      ...(Array.isArray(legacy) ? legacy : []),
+      ...(Array.isArray(projects) ? projects.map(item => ({ ...item, category: "Projekt" })) : [])
+    ].map((item, index) => ({
+      id: String(item.id || "legacy-" + index),
+      title: String(item.title || "Importierte Notiz"),
+      text: String(item.text || ""),
+      category: String(item.category || "Notiz"),
+      updatedAt: item.updated || new Date().toISOString()
+    })).filter(item => item.title && item.text);
+    if (migrated.length) localStorage.setItem(KEY, JSON.stringify(migrated));
+    return migrated;
   } catch {
     return [];
   }
